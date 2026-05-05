@@ -80,6 +80,17 @@ public class DivisasClient {
         return new QueryBuilder(this);
     }
 
+    public java.util.List<lat.divisas.sdk.models.CountryResponse> getCountries() {
+        lat.divisas.sdk.models.CountryResponse[] arr = request("/countries", null, lat.divisas.sdk.models.CountryResponse[].class);
+        return java.util.Arrays.asList(arr);
+    }
+
+    public java.util.List<String> getCurrencies(lat.divisas.sdk.enums.Country country) {
+        if (country == null) throw new IllegalArgumentException("Country cannot be null");
+        String[] arr = request("/" + country.getCode() + "/currencies", null, String[].class);
+        return java.util.Arrays.asList(arr);
+    }
+
     public <T> T request(String endpoint, Map<String, String> queryParams, Class<T> responseType) {
         String queryString = "";
         if (queryParams != null && !queryParams.isEmpty()) {
