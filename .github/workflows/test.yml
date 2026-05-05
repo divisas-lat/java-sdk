@@ -25,4 +25,4 @@ jobs:
         cache: maven
         
     - name: Build with Maven
-      run: mvn clean package --batch-mode -Dnet.bytebuddy.experimental=true
+      run: mvn clean package --batch-mode
