@@ -5,6 +5,10 @@ import lat.divisas.sdk.enums.Country;
 import lat.divisas.sdk.enums.Currency;
 import lat.divisas.sdk.models.ConversionResponse;
 import lat.divisas.sdk.models.TodayRatesResponse;
+import lat.divisas.sdk.models.HistoricalRateResponse;
+import lat.divisas.sdk.models.StatsResponse;
+import lat.divisas.sdk.models.ForecastResponse;
+import lat.divisas.sdk.models.PercentileResponse;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -58,6 +62,58 @@ public class QueryBuilder {
         return client.request(endpoint, query, ConversionResponse.class);
     }
     
-    // Additional methods (stats, history, forecast) omitted here for brevity 
-    // but follow the exact same pattern!
+    public HistoricalRateResponse getHistory(String fromDate, String toDate) {
+        if (currency == null) {
+            throw new IllegalStateException("Currency is required for historical data. Call withCurrency() first.");
+        }
+        
+        String endpoint = "/" + getCountryCode() + "/rates/history";
+        Map<String, String> query = new HashMap<>();
+        query.put("currency", currency.name());
+        
+        if (fromDate != null && !fromDate.isEmpty()) query.put("from", fromDate);
+        if (toDate != null && !toDate.isEmpty()) query.put("to", toDate);
+
+        return client.request(endpoint, query, HistoricalRateResponse.class);
+    }
+
+    public StatsResponse getStats(String period) {
+        String endpoint = "/" + getCountryCode() + "/rates/stats";
+        Map<String, String> query = new HashMap<>();
+        if (period != null && !period.isEmpty()) {
+            query.put("period", period);
+        }
+        
+        if (currency != null) {
+            query.put("currency", currency.name());
+        }
+
+        return client.request(endpoint, query, StatsResponse.class);
+    }
+
+    public ForecastResponse getForecast(int days) {
+        String endpoint = "/" + getCountryCode() + "/rates/forecast";
+        Map<String, String> query = new HashMap<>();
+        query.put("days", String.valueOf(days));
+        
+        if (currency != null) {
+            query.put("currency", currency.name());
+        }
+
+        return client.request(endpoint, query, ForecastResponse.class);
+    }
+
+    public PercentileResponse getPercentile(String period) {
+        String endpoint = "/" + getCountryCode() + "/rates/percentile";
+        Map<String, String> query = new HashMap<>();
+        if (period != null && !period.isEmpty()) {
+            query.put("period", period);
+        }
+        
+        if (currency != null) {
+            query.put("currency", currency.name());
+        }
+
+        return client.request(endpoint, query, PercentileResponse.class);
+    }
 }
